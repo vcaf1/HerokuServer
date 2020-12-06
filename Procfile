@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/SpringTest-0.0.1-SNAPSHOT.jar 
+web: java -Dserver.port=$PORT -jar target/HerokuServer-0.0.1-SNAPSHOT.jar 
