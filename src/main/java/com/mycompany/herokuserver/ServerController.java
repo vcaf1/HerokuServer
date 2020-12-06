@@ -74,7 +74,7 @@ public class ServerController {
                     try {
         
                         int Payloadplace = json.indexOf("vs");
-                        int StartofPayload = Payloadplace + 8;
+                        int StartofPayload = Payloadplace + 7;
                         int EndOfPayload =StartofPayload + 2;
                         String HumidityHex = json.substring(StartofPayload, EndOfPayload);
                         System.out.println(HumidityHex);
