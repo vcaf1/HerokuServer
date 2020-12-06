@@ -75,6 +75,6 @@ class LuchtModule {
 
   @Override
   public String toString() {
-    return "Employee{" + "id=" + this.id + ", name='" + this.valueHum + '\'' + ", role='" + this.valueTem + '\'' + '}';
+    return "LuchtModule{" + "id=" + this.id + ", Humidity='" + this.valueHum + '\'' + ", Temperature='" + this.valueTem + '\'' + '}';
   }
 }
