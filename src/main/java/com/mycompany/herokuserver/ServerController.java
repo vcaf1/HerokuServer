@@ -70,6 +70,7 @@ public class ServerController {
         //Just has a Sysout stmt, a real world application would save this record to the database
         System.out.println("Data sent from KPN");
         System.out.println(json);
+        int counter =0;
                     LuchtModule module = new LuchtModule();
                     try {
         
@@ -96,11 +97,12 @@ public class ServerController {
                         System.out.println("Couldn't find the vs atribute");
 
                     }
-                int moduleHumidity = lijst.get(0).getValueHum();
-                int moduleTemperatuur = lijst.get(0).getValueTem();
+                int moduleHumidity = lijst.get(counter).getValueHum();
+                int moduleTemperatuur = lijst.get(counter).getValueTem();
 
                 System.out.println("Humidity: " + moduleHumidity);
                 System.out.println("Temperatuur: " + moduleTemperatuur);
+                counter++;
         return luchtModuleDao.getAllLuchtModules();
 
     }
