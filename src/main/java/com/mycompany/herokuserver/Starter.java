@@ -17,6 +17,8 @@ import org.springframework.context.annotation.Bean;
  *
  * @author Victoria
  */
+//to run the localhost locally
+//http://localhost:8080/lucht/
 public class Starter {
 
 	public static void main(String[] args) {

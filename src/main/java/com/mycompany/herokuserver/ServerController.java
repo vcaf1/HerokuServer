@@ -5,14 +5,13 @@
  */
 package com.mycompany.herokuserver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +31,7 @@ public class ServerController {
     private LuchtModuleDAO luchtModuleDao;
     private ArrayList<LuchtModule> lijst = new ArrayList<>();
 
+  //private DataSource dataSource;
     private int counter = 0;
 
     @GetMapping(path = "/", produces = "application/json")
@@ -89,6 +89,17 @@ public class ServerController {
             module.setValueHum(HumidityDec);
             module.setValueTem(TemperatuurDec);
             lijst.add(module);
+            
+            LuchtModule dbluchtmodule = new LuchtModule(counter, HumidityDec, TemperatuurDec);
+                    try {
+                        Connection con = DBCPDataSource.getConnection();
+                        Statement stat = con.createStatement();
+                        String insertStatement = "insert into luchtmoduledatas values('"+dbluchtmodule.getId()+"','"+dbluchtmodule.getValueTem()+"','"+dbluchtmodule.getValueHum()+"')";
+                         int  result = stat.executeUpdate(insertStatement);
+            
+                            } catch (SQLException se) {
+                                System.out.println(se.getMessage());
+                            }
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -104,5 +115,38 @@ public class ServerController {
         return luchtModuleDao.getAllLuchtModules();
 
     }
+    /*
+     @RequestMapping("/db")
+  String db(Map<String, Object> model) {
+    try (Connection connection = dataSource.getConnection()) {
+      Statement stmt = connection.createStatement();
+      stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
+      stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
+      ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
+
+      ArrayList<String> output = new ArrayList<String>();
+      while (rs.next()) {
+        output.add("Read from DB: " + rs.getTimestamp("tick"));
+      }
+
+      model.put("records", output);
+      return "db";
+    } catch (Exception e) {
+      model.put("message", e.getMessage());
+      return "error";
+    }
+  }
+
+  @Bean
+  public DataSource dataSource() throws SQLException {
+    if (dbUrl == null || dbUrl.isEmpty()) {
+      return new HikariDataSource();
+    } else {
+      HikariConfig config = new HikariConfig();
+      config.setJdbcUrl(dbUrl);
+      return new HikariDataSource(config);
+    }
+  }
+*/
 
 }
