@@ -22,16 +22,16 @@ public class DBCPDataSource {
 285     * The connection URL to be passed to our JDBC driver to establish a connection.
 * Note: this method currently has no effect once the pool has been initialized. The pool is initialized the first time one of the following methods is invoked: getConnection, setLogwriter, setLoginTimeout, getLoginTimeout, getLogWriter.
 286     */
-        ds.setUrl("jdbc:mysql://localhost:3306/luchtmodule?useSSL=false");
+        ds.setUrl("postgres://kdftqapz:mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4@dumbo.db.elephantsql.com:5432/kdftqapz");
 
         /**
 290     * The connection user name to be passed to our JDBC driver to establish a connection.
 291     */
-        ds.setUsername("luchtmodule");
+        ds.setUsername("kdftqapz");
         /**
 280     * The connection password to be passed to our JDBC driver to establish a connection.
 281     */
-        ds.setPassword("luchtmodule");
+        ds.setPassword("mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4");
         /**
 188     * The minimum number of active connections that can remain idle in the pool, without extra ones being created when
 189     * the evictor runs, or 0 to create none. The pool attempts to ensure that minIdle connections are available when

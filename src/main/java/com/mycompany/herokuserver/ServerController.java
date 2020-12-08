@@ -94,7 +94,7 @@ public class ServerController {
                     try {
                         Connection con = DBCPDataSource.getConnection();
                         Statement stat = con.createStatement();
-                        String insertStatement = "insert into luchtmoduledatas values('"+dbluchtmodule.getId()+"','"+dbluchtmodule.getValueTem()+"','"+dbluchtmodule.getValueHum()+"')";
+                        String insertStatement = "insert into luchtmodules values('"+dbluchtmodule.getValueTem()+"','"+dbluchtmodule.getValueHum()+"')";
                          int  result = stat.executeUpdate(insertStatement);
             
                             } catch (SQLException se) {
