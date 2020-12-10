@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.herokuserver;
 
 /**
@@ -22,7 +17,7 @@ public class DBCPDataSource {
 285     * The connection URL to be passed to our JDBC driver to establish a connection.
 * Note: this method currently has no effect once the pool has been initialized. The pool is initialized the first time one of the following methods is invoked: getConnection, setLogwriter, setLoginTimeout, getLoginTimeout, getLogWriter.
 286     */
-        ds.setUrl("postgres://kdftqapz:mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4@dumbo.db.elephantsql.com:5432/kdftqapz");
+        ds.setUrl("jdbc:postgresql://dumbo.db.elephantsql.com:5432/kdftqapz");
 
         /**
 290     * The connection user name to be passed to our JDBC driver to establish a connection.

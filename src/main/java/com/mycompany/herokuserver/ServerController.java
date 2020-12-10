@@ -7,9 +7,12 @@ package com.mycompany.herokuserver;
 
 import java.net.URI;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Properties;
+import org.postgresql.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +34,7 @@ public class ServerController {
     private LuchtModuleDAO luchtModuleDao;
     private ArrayList<LuchtModule> lijst = new ArrayList<>();
 
-  //private DataSource dataSource;
+    //private DataSource dataSource;
     private int counter = 0;
 
     @GetMapping(path = "/", produces = "application/json")
@@ -89,17 +92,29 @@ public class ServerController {
             module.setValueHum(HumidityDec);
             module.setValueTem(TemperatuurDec);
             lijst.add(module);
-            
+
             LuchtModule dbluchtmodule = new LuchtModule(counter, HumidityDec, TemperatuurDec);
-                    try {
-                        Connection con = DBCPDataSource.getConnection();
-                        Statement stat = con.createStatement();
-                        String insertStatement = "insert into luchtmodules values('"+dbluchtmodule.getValueTem()+"','"+dbluchtmodule.getValueHum()+"')";
-                         int  result = stat.executeUpdate(insertStatement);
-            
-                            } catch (SQLException se) {
-                                System.out.println(se.getMessage());
-                            }
+            try {
+                Class.forName("org.postgresql.Driver");
+            } catch (java.lang.ClassNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+
+            try {
+                /*
+                String url = "jdbc:postgresql://dumbo.db.elephantsql.com:5432/kdftqapz";
+                String username = "kdftqapz";
+                String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
+                Connection con = DriverManager.getConnection(url,username,password);
+                 */
+                Connection con = DBCPDataSource.getConnection();
+                Statement stat = con.createStatement();
+                String insertStatement = "insert into luchtmodules (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
+                int result = stat.executeUpdate(insertStatement);
+
+            } catch (SQLException se) {
+                System.out.println(se.getMessage());
+            }
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -147,6 +162,6 @@ public class ServerController {
       return new HikariDataSource(config);
     }
   }
-*/
+     */
 
 }
