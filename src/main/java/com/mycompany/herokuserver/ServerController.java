@@ -42,32 +42,6 @@ public class ServerController {
         return luchtModuleDao.getAllLuchtModules();
     }
 
-    @PostMapping("/start")
-    public String create() {
-        return "start";
-    }
-
-    @PostMapping(path = "/module", produces = "application/json")
-    public LuchtModules addModule(@RequestBody LuchtModule module) {
-        //Just has a Sysout stmt, a real world application would save this record to the database
-        System.out.println("Saving person information");
-        //Generate resource id
-        Integer id = luchtModuleDao.getAllLuchtModules().getLuchtModuleList().size() + 1;
-        module.setId(id);
-
-        //add resource
-        luchtModuleDao.addLuchtModule(module);
-
-        //Create resource location
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(module.getId())
-                .toUri();
-        System.out.println(luchtModuleDao.getAllLuchtModules().toString());
-        return luchtModuleDao.getAllLuchtModules();
-
-    }
-
     @PostMapping(path = "/kpn", produces = "application/json")
     public LuchtModules addKPN(@RequestBody String json) {
         //Just has a Sysout stmt, a real world application would save this record to the database
@@ -93,7 +67,7 @@ public class ServerController {
             module.setValueTem(TemperatuurDec);
             lijst.add(module);
 
-            LuchtModule dbluchtmodule = new LuchtModule(counter, HumidityDec, TemperatuurDec);
+            LuchtModule dbluchtmodule = new LuchtModule( HumidityDec, TemperatuurDec);
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (java.lang.ClassNotFoundException e) {
