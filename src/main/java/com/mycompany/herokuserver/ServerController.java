@@ -38,6 +38,7 @@ public class ServerController {
     private ArrayList<WindModule> windlijst = new ArrayList<>();
     private LuchtModules luchtlist = new LuchtModules();
     private WindModules windlist = new WindModules();
+    private Statement stat;
 
     //private DataSource dataSource;
     private int counter = 0;
@@ -102,6 +103,14 @@ public class ServerController {
         System.out.println("Data sent from KPN for the LuchtModule");
         System.out.println(json);
         LuchtModule Lumodule = new LuchtModule();
+
+            try {
+            Connection con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+
+            } catch (SQLException se) {
+                System.out.println(se.getMessage());
+            } 
         try {
 
             int Payloadplace = json.indexOf("vs");
@@ -122,13 +131,12 @@ public class ServerController {
             luchtlijst.add(Lumodule);
 
             LuchtModule dbluchtmodule = new LuchtModule(HumidityDec, TemperatuurDec);
+            
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (java.lang.ClassNotFoundException e) {
                 System.out.println(e.getMessage());
             }
-            Connection con = DBCPDataSource.getConnection();
-            Statement stat = con.createStatement();
 
             try {
                 /*
@@ -142,16 +150,23 @@ public class ServerController {
 
             } catch (SQLException se) {
                 System.out.println(se.getMessage());
-            } finally {
-                //It's important to close the statement when you are done with it
-                stat.close();
-            }
+            } 
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Couldn't find the vs atribute");
 
-        }
+        } finally {
+                //It's important to close the statement when you are done with it
+                try{
+                stat.close();
+                }catch(Exception se){
+                    //do something
+            System.out.println(se.getMessage());
+                    
+                }
+            }
+        
         int moduleHumidity = luchtlijst.get(counter).getValueHum();
         int moduleTemperatuur = luchtlijst.get(counter).getValueTem();
 
