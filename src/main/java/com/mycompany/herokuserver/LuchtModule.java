@@ -15,9 +15,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
  
 
-class LuchtModule {
+class LuchtModule extends Modules{
 
-  private  int id, valueTem,valueHum;
+  private  int valueTem,valueHum;
 
   LuchtModule() {}
 
@@ -26,6 +26,7 @@ class LuchtModule {
         this.valueHum = valueHum;
   }
     public LuchtModule(int id, int valueTem, int valueHum) {
+        super();
         this.id = id;
         this.valueTem = valueTem;
         this.valueHum = valueHum;

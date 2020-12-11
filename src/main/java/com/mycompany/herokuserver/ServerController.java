@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping(path = "/lucht")
+@RequestMapping(path = "/module")
 /**
  *
  * @author Victoria
@@ -33,13 +33,16 @@ public class ServerController {
 
     @Autowired
     private LuchtModuleDAO luchtModuleDao;
-    private ArrayList<LuchtModule> lijst = new ArrayList<>();
-    private LuchtModules list = new LuchtModules();
+    private WindModuleDAO windModuleDao;
+    private ArrayList<LuchtModule> luchtlijst = new ArrayList<>();
+    private ArrayList<WindModule> windlijst = new ArrayList<>();
+    private LuchtModules luchtlist = new LuchtModules();
+    private WindModules windlist = new WindModules();
 
     //private DataSource dataSource;
     private int counter = 0;
 
-    @GetMapping(path = "/", produces = "application/json")
+    @GetMapping(path = "/lucht", produces = "application/json")
     public LuchtModules getLuchtModules() {
 
         try {
@@ -53,23 +56,52 @@ public class ServerController {
             Statement stat = con.createStatement();
             ResultSet result = stat.executeQuery("select * from luchtmodules");
             while (result.next()) {
-                LuchtModule dbluchtmodule = new LuchtModule(result.getInt("lumod_id"),result.getInt("temperatuur"), result.getInt("vochtigheid"));
-                list.getLuchtModuleList().add(dbluchtmodule);
+                LuchtModule dbluchtmodule = new LuchtModule(result.getInt("lumod_id"), result.getInt("temperatuur"), result.getInt("vochtigheid"));
+                luchtlist.getLuchtModuleList().add(dbluchtmodule);
             }
             System.out.println("Added the data from the ElephantSQL databse from the Luchtmodule");
-            }catch (SQLException se) {
-                System.out.println(se.getMessage());
-            }
-        
-        return list;
+        } catch (SQLException se) {
+            System.out.println(se.getMessage());
+        }
+
+        return luchtlist;
+        //return luchtModuleDao.getAllLuchtModules();
     }
 
-    @PostMapping(path = "/kpn", produces = "application/json")
-    public LuchtModules addKPN(@RequestBody String json) {
+    /*
+    @GetMapping(path = "/wind", produces = "application/json")
+    public WindModules getWindModules() {
+
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (java.lang.ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            Connection con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+            ResultSet result = stat.executeQuery("select * from luchtmodules");
+            while (result.next()) {
+                WindModule dbwindmodule = new WindModule(result.getInt("lumod_id"), result.getInt("temperatuur"), result.getInt("vochtigheid"));
+                windlist.getWindModuleList().add(dbwindmodule);
+            }
+            System.out.println("Added the data from the ElephantSQL databse from the Windmodule");
+        } catch (SQLException se) {
+            System.out.println(se.getMessage());
+        }
+
+        return windlist;
+        //return windModuleDao.getAllWindModules();
+    }
+    */
+
+    @PostMapping(path = "/kpn/luchtmodule", produces = "application/json")
+    public LuchtModules addKPNLuchtModule(@RequestBody String json) {
         //Just has a Sysout stmt, a real world application would save this record to the database
-        System.out.println("Data sent from KPN");
+        System.out.println("Data sent from KPN for the LuchtModule");
         System.out.println(json);
-        LuchtModule module = new LuchtModule();
+        LuchtModule Lumodule = new LuchtModule();
         try {
 
             int Payloadplace = json.indexOf("vs");
@@ -85,11 +117,77 @@ public class ServerController {
             Integer HumidityDec = Integer.parseInt(HumidityHex, 16);
             Integer TemperatuurDec = Integer.parseInt(TemperatuurHex, 16);
 
-            module.setValueHum(HumidityDec);
-            module.setValueTem(TemperatuurDec);
-            lijst.add(module);
+            Lumodule.setValueHum(HumidityDec);
+            Lumodule.setValueTem(TemperatuurDec);
+            luchtlijst.add(Lumodule);
 
-            LuchtModule dbluchtmodule = new LuchtModule( HumidityDec, TemperatuurDec);
+            LuchtModule dbluchtmodule = new LuchtModule(HumidityDec, TemperatuurDec);
+            try {
+                Class.forName("org.postgresql.Driver");
+            } catch (java.lang.ClassNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+            Connection con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+
+            try {
+                /*
+                String url = "jdbc:postgresql://dumbo.db.elephantsql.com:5432/kdftqapz";
+                String username = "kdftqapz";
+                String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
+                Connection con = DriverManager.getConnection(url,username,password);
+                 */
+                String insertStatement = "insert into luchtmodules (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
+                int result = stat.executeUpdate(insertStatement);
+
+            } catch (SQLException se) {
+                System.out.println(se.getMessage());
+            } finally {
+                //It's important to close the statement when you are done with it
+                stat.close();
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Couldn't find the vs atribute");
+
+        }
+        int moduleHumidity = luchtlijst.get(counter).getValueHum();
+        int moduleTemperatuur = luchtlijst.get(counter).getValueTem();
+
+        System.out.println("Humidity: " + moduleHumidity);
+        System.out.println("Temperatuur: " + moduleTemperatuur);
+        counter++;
+        return luchtModuleDao.getAllLuchtModules();
+
+    }
+/*
+    @PostMapping(path = "/kpn/windmodule", produces = "application/json")
+    public WindModules addKPNWindModule(@RequestBody String json) {
+        //Just has a Sysout stmt, a real world application would save this record to the database
+        System.out.println("Data sent from KPN for the WindModule");
+        System.out.println(json);
+        WindModule Wmodule = new WindModule();
+        try {
+
+            int Payloadplace = json.indexOf("vs");
+            int StartofPayload = Payloadplace + 7;
+            int EndOfPayload = StartofPayload + 2;
+            String HumidityHex = json.substring(StartofPayload, EndOfPayload);
+            System.out.println(HumidityHex);
+            int StartofPayloadTeam = EndOfPayload + 2;
+            int EndOfPayloadTem = StartofPayloadTeam + 2;
+            String TemperatuurHex = json.substring(StartofPayloadTeam, EndOfPayloadTem);
+            System.out.println(TemperatuurHex);
+
+            Integer HumidityDec = Integer.parseInt(HumidityHex, 16);
+            Integer TemperatuurDec = Integer.parseInt(TemperatuurHex, 16);
+
+            Wmodule.setValueHum(HumidityDec);
+            Wmodule.setValueTem(TemperatuurDec);
+            windlijst.add(Wmodule);
+
+            WindModule dbwindmodule = new WindModule();
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (java.lang.ClassNotFoundException e) {
@@ -102,10 +200,9 @@ public class ServerController {
                 String username = "kdftqapz";
                 String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
                 Connection con = DriverManager.getConnection(url,username,password);
-                 */
                 Connection con = DBCPDataSource.getConnection();
                 Statement stat = con.createStatement();
-                String insertStatement = "insert into luchtmodules (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
+                String insertStatement = "insert into luchtmodules (temperatuur,vochtigheid) values('" + dbwindmodule.getValueTem() + "','" + dbwindmodule.getValueHum() + "')";
                 int result = stat.executeUpdate(insertStatement);
 
             } catch (SQLException se) {
@@ -117,15 +214,26 @@ public class ServerController {
             System.out.println("Couldn't find the vs atribute");
 
         }
-        int moduleHumidity = lijst.get(counter).getValueHum();
-        int moduleTemperatuur = lijst.get(counter).getValueTem();
+        int moduleHumidity = windlijst.get(counter).getValueHum();
+        int moduleTemperatuur = windlijst.get(counter).getValueTem();
 
         System.out.println("Humidity: " + moduleHumidity);
         System.out.println("Temperatuur: " + moduleTemperatuur);
         counter++;
-        return luchtModuleDao.getAllLuchtModules();
+        return windModuleDao.getAllWindModules();
 
     }
+    */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /*
      @RequestMapping("/db")
   String db(Map<String, Object> model) {

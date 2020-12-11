@@ -16,9 +16,13 @@ import org.springframework.stereotype.Repository;
  * @author Victoria
  */
 @Repository
-public class LuchtModuleDAO {
-
-    private static LuchtModules list = new LuchtModules();
+public class WindModuleDAO {
+    
+/*the Result statement for WindModule for the database
+    Fix the atributes for the windmodule so that the data can be set
+    in the ServerController have to fix the Wind attributes and wind databse so the right infor is shown 
+    for the windmodule*/
+    private static WindModules list = new WindModules();
 
     static {
 
@@ -33,10 +37,10 @@ public class LuchtModuleDAO {
             Statement stat = con.createStatement();
             ResultSet result = stat.executeQuery("select * from luchtmodules");
             while (result.next()) {
-                LuchtModule dbluchtmodule = new LuchtModule(result.getInt("lumod_id"),result.getInt("temperatuur"), result.getInt("vochtigheid"));
-                list.getLuchtModuleList().add(dbluchtmodule);
+                WindModule dbwindmodule = new WindModule();
+                list.getWindModuleList().add(dbwindmodule);
             }
-            System.out.println("Added the data from the ElephantSQL database from the Luchtmodule");
+            System.out.println("Added the data from the ElephantSQL database from the Windmodule");
             }catch (SQLException se) {
                 System.out.println(se.getMessage());
             }
@@ -44,11 +48,12 @@ public class LuchtModuleDAO {
      
     
 
-    public LuchtModules getAllLuchtModules() {
+    public WindModules getAllWindModules() {
         return list;
     }
 
-    public void addLuchtModule(LuchtModule luchtModule) {
-        list.getLuchtModuleList().add(luchtModule);
+    public void addWindModule(WindModule windModule) {
+        list.getWindModuleList().add(windModule);
     }
 }
+
