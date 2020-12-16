@@ -42,7 +42,8 @@ public class ServerController {
     private DBCPDataSource db;
 
     //private DataSource dataSource;
-    private int counter = 0;
+    private int luchtcounter = 0;
+    private int windcounter = 0;
 
     @GetMapping(path = "/lucht", produces = "application/json")
     public LuchtModules getLuchtModules() {
@@ -142,12 +143,12 @@ public class ServerController {
             String insertStatement = "insert into luchtmodules (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
             int result = stat.executeUpdate(insertStatement);
 
-            int moduleHumidity = luchtlijst.get(counter).getValueHum();
-            int moduleTemperatuur = luchtlijst.get(counter).getValueTem();
+            int moduleHumidity = luchtlijst.get(luchtcounter).getValueHum();
+            int moduleTemperatuur = luchtlijst.get(luchtcounter).getValueTem();
 
             System.out.println("Humidity: " + moduleHumidity);
             System.out.println("Temperatuur: " + moduleTemperatuur);
-            counter++;
+            luchtcounter++;
             con.close();
             return "Data has been sent";
             
@@ -214,12 +215,12 @@ public class ServerController {
             String insertStatement = "insert into windmodules (windrichting,windsnelheid) values('" + dbwindmodule.getValueWindR()+ "','" + dbwindmodule.getValueWindS()+ "')";
             int result = stat.executeUpdate(insertStatement);
 
-            int moduleWindR = windlijst.get(counter).getValueWindR();
-            int moduleWindS = windlijst.get(counter).getValueWindS();
+            int moduleWindR = windlijst.get(windcounter).getValueWindR();
+            int moduleWindS = windlijst.get(windcounter).getValueWindS();
 
             System.out.println("Windrichting: " + moduleWindR);
             System.out.println("Windsnelheid: " + moduleWindS);
-            counter++;
+            windcounter++;
             con.close();
             return "Data has been sent";
             
