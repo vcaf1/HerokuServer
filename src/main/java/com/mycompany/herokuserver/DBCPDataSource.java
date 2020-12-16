@@ -72,4 +72,9 @@ public class DBCPDataSource {
     private DBCPDataSource(){
         
     }
+    
+    public static void closeConnection() throws SQLException{
+        ds.close();
+    }
+    
 }

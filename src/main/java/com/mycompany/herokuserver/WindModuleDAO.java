@@ -35,7 +35,7 @@ public class WindModuleDAO {
         try {
             Connection con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
-            ResultSet result = stat.executeQuery("select * from luchtmodules");
+            ResultSet result = stat.executeQuery("select * from windmodules");
             while (result.next()) {
                 WindModule dbwindmodule = new WindModule();
                 list.getWindModuleList().add(dbwindmodule);
