@@ -108,23 +108,29 @@ public class ServerController {
         try {
 
             int Payloadplace = json.indexOf("vs");
-            int StartofPayload = Payloadplace + 7;
-            int EndOfPayload = StartofPayload + 2;
-            String HumidityHex = json.substring(StartofPayload, EndOfPayload);
+            int StartofPayloadHum = Payloadplace + 7;
+            int EndOfPayloadHum = StartofPayloadHum + 2;
+            String HumidityHex = json.substring(StartofPayloadHum, EndOfPayloadHum);
             System.out.println(HumidityHex);
-            int StartofPayloadTeam = EndOfPayload + 2;
-            int EndOfPayloadTem = StartofPayloadTeam + 2;
-            String TemperatuurHex = json.substring(StartofPayloadTeam, EndOfPayloadTem);
+            int StartofPayloadTem = EndOfPayloadHum + 2;
+            int EndOfPayloadTem = StartofPayloadTem + 2;
+            String TemperatuurHex = json.substring(StartofPayloadTem, EndOfPayloadTem);
             System.out.println(TemperatuurHex);
+            int StartofPayloadId = EndOfPayloadTem;
+            int EndOfPayloadTId = StartofPayloadId + 2;
+            String IdHex = json.substring(StartofPayloadId, EndOfPayloadTId);
+            System.out.println(IdHex);
 
             Integer HumidityDec = Integer.parseInt(HumidityHex, 16);
             Integer TemperatuurDec = Integer.parseInt(TemperatuurHex, 16);
+            Integer IdDec = Integer.parseInt(IdHex, 16);
 
+            Lumodule.setId(IdDec);
             Lumodule.setValueHum(HumidityDec);
             Lumodule.setValueTem(TemperatuurDec);
             luchtlijst.add(Lumodule);
 
-            LuchtModule dbluchtmodule = new LuchtModule(HumidityDec, TemperatuurDec);
+            LuchtModule dbluchtmodule = new LuchtModule(IdDec, HumidityDec, TemperatuurDec);
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (java.lang.ClassNotFoundException e) {
@@ -140,14 +146,19 @@ public class ServerController {
                 String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
                 Connection con = DriverManager.getConnection(url,username,password);
              */
-            String insertStatement = "insert into smartfarm.airdata (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
-            int result = stat.executeUpdate(insertStatement);
+            //String insertStatement = "insert into smartfarm.airdata (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
+            String insertStatementTemperatuur = "insert into smartfarm.airmodules (air_id,aird_details) values('Lu" + dbluchtmodule.getId()+ "T','" + dbluchtmodule.getValueTem()+ "')";
+            String insertStatementVochtigheid = "insert into smartfarm.airmodules (air_id,aird_details) values('Lu" + dbluchtmodule.getId()+ "V','" + dbluchtmodule.getValueHum()+ "')";
+            int resultT = stat.executeUpdate(insertStatementTemperatuur);
+            int resultV = stat.executeUpdate(insertStatementVochtigheid);
 
             int moduleHumidity = luchtlijst.get(luchtcounter).getValueHum();
             int moduleTemperatuur = luchtlijst.get(luchtcounter).getValueTem();
+            int moduleId = luchtlijst.get(luchtcounter).getId();
 
             System.out.println("Humidity: " + moduleHumidity);
             System.out.println("Temperatuur: " + moduleTemperatuur);
+            System.out.println("LuchtModuleId: " + moduleId);
             luchtcounter++;
             con.close();
             return "Data has been sent";
