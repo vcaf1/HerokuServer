@@ -140,7 +140,7 @@ public class ServerController {
                 String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
                 Connection con = DriverManager.getConnection(url,username,password);
              */
-            String insertStatement = "insert into luchtmodules (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
+            String insertStatement = "insert into smartfarm.airdata (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
             int result = stat.executeUpdate(insertStatement);
 
             int moduleHumidity = luchtlijst.get(luchtcounter).getValueHum();
