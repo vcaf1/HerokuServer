@@ -136,7 +136,6 @@ public class ServerController {
             } catch (java.lang.ClassNotFoundException e) {
                 System.out.println(e.getMessage());
             }
-            
             Connection con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
 
@@ -147,8 +146,8 @@ public class ServerController {
                 Connection con = DriverManager.getConnection(url,username,password);
              */
             //String insertStatement = "insert into smartfarm.airdata (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
-            String insertStatementTemperatuur = "insert into smartfarm.airmodules (air_id,aird_details) values('Lu" + dbluchtmodule.getId()+ "T','" + dbluchtmodule.getValueTem()+ "')";
-            String insertStatementVochtigheid = "insert into smartfarm.airmodules (air_id,aird_details) values('Lu" + dbluchtmodule.getId()+ "V','" + dbluchtmodule.getValueHum()+ "')";
+            String insertStatementTemperatuur = "insert into smartfarm.airmodule (air_id,air_details) values('Lu" + dbluchtmodule.getId()+ "T','" + dbluchtmodule.getValueTem()+ "')";
+            String insertStatementVochtigheid = "insert into smartfarm.airmodule (air_id,air_details) values('Lu" + dbluchtmodule.getId()+ "V','" + dbluchtmodule.getValueHum()+ "')";
             int resultT = stat.executeUpdate(insertStatementTemperatuur);
             int resultV = stat.executeUpdate(insertStatementVochtigheid);
 
@@ -191,23 +190,29 @@ public class ServerController {
         try {
 
             int Payloadplace = json.indexOf("vs");
-            int StartofPayload = Payloadplace + 7;
-            int EndOfPayload = StartofPayload + 2;
-            String WindRHex = json.substring(StartofPayload, EndOfPayload);
+            int StartofPayloadWindR = Payloadplace + 7;
+            int EndOfPayloadWindR = StartofPayloadWindR + 2;
+            String WindRHex = json.substring(StartofPayloadWindR, EndOfPayloadWindR);
             System.out.println(WindRHex);
-            int StartofPayloadTeam = EndOfPayload + 2;
-            int EndOfPayloadTem = StartofPayloadTeam + 2;
-            String WindSHex = json.substring(StartofPayloadTeam, EndOfPayloadTem);
+            int StartofPayloadWindS = EndOfPayloadWindR + 2;
+            int EndOfPayloadWindS = StartofPayloadWindS + 2;
+            String WindSHex = json.substring(StartofPayloadWindS, EndOfPayloadWindS);
             System.out.println(WindSHex);
+            int StartofPayloadId = EndOfPayloadWindS;
+            int EndOfPayloadTId = StartofPayloadId + 2;
+            String IdHex = json.substring(StartofPayloadId, EndOfPayloadTId);
+            System.out.println(IdHex);
 
             Integer WindRDec = Integer.parseInt(WindRHex, 16);
             Integer WindSDec = Integer.parseInt(WindSHex, 16);
+            Integer IdDec = Integer.parseInt(IdHex, 16);
 
             Wmodule.setValueWindR(WindRDec);
             Wmodule.setValueWindS(WindSDec);
+            Wmodule.setId(IdDec);
             windlijst.add(Wmodule);
 
-            WindModule dbwindmodule = new WindModule(WindRDec,WindSDec);
+            WindModule dbwindmodule = new WindModule(IdDec,WindRDec,WindSDec);
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (java.lang.ClassNotFoundException e) {
@@ -223,14 +228,19 @@ public class ServerController {
                 String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
                 Connection con = DriverManager.getConnection(url,username,password);
              */
-            String insertStatement = "insert into windmodules (windrichting,windsnelheid) values('" + dbwindmodule.getValueWindR()+ "','" + dbwindmodule.getValueWindS()+ "')";
-            int result = stat.executeUpdate(insertStatement);
+            //String insertStatement = "insert into windmodules (windrichting,windsnelheid) values('" + dbwindmodule.getValueWindR()+ "','" + dbwindmodule.getValueWindS()+ "')";
+            String insertStatementWindRichting = "insert into smartfarm.windmodule (wind_id,wind_details) values('W" + dbwindmodule.getId()+ "R','" + dbwindmodule.getValueWindR()+ "')";
+            String insertStatementWindSnelheid = "insert into smartfarm.windmodule (wind_id,wind_details) values('W" + dbwindmodule.getId()+ "S','" + dbwindmodule.getValueWindS()+ "')";
+            int resultR = stat.executeUpdate(insertStatementWindRichting);
+            int resultS = stat.executeUpdate(insertStatementWindSnelheid);
 
             int moduleWindR = windlijst.get(windcounter).getValueWindR();
             int moduleWindS = windlijst.get(windcounter).getValueWindS();
+            int moduleId = windlijst.get(windcounter).getId();
 
             System.out.println("Windrichting: " + moduleWindR);
             System.out.println("Windsnelheid: " + moduleWindS);
+            System.out.println("WindModuleId: " + moduleId);
             windcounter++;
             con.close();
             return "Data has been sent";
