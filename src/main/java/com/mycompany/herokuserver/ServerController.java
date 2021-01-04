@@ -34,16 +34,24 @@ public class ServerController {
     @Autowired
     private LuchtModuleDAO luchtModuleDao;
     private WindModuleDAO windModuleDao;
+    private GasModuleDAO gasModuleDao;
+    private BodemDAO bodemModuleDao;
     private ArrayList<LuchtModule> luchtlijst = new ArrayList<>();
     private ArrayList<WindModule> windlijst = new ArrayList<>();
+    private ArrayList<GasModule> gaslijst = new ArrayList<>();
+    private ArrayList<BodemModule> bodemlijst = new ArrayList<>();
     private LuchtModules luchtlist = new LuchtModules();
     private WindModules windlist = new WindModules();
+    private GasModules gaslist = new GasModules();
+    private BodemModules bodemList = new BodemModules();
     private Statement stat;
     private DBCPDataSource db;
 
     //private DataSource dataSource;
     private int luchtcounter = 0;
     private int windcounter = 0;
+    private int gascounter = 0;
+    private int bodemcounter = 0;
 
     @GetMapping(path = "/lucht", produces = "application/json")
     public LuchtModules getLuchtModules() {
@@ -245,6 +253,160 @@ public class ServerController {
             con.close();
             return "Data has been sent";
             
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Couldn't find the vs atribute");
+            return "Data has not been sent";
+//        } finally {
+//            //It's important to close the statement when you are done with it
+//            try {
+//                stat.close();
+//            } catch (SQLException se) {
+//                //do something
+//                System.out.println(se.getMessage());
+//                System.out.println("Something went wrong performing the finally block");
+//
+//            }
+        }
+
+    }
+    
+    @PostMapping(path = "/kpn/gasmodule", produces = "application/json")
+    public String addKPNGasModule(@RequestBody String json) {
+        //Just has a Sysout stmt, a real world application would save this record to the database
+        System.out.println("Data sent from KPN for the GasModule");
+        System.out.println(json);
+        GasModule Gmodule = new GasModule();
+        try {
+
+            int Payloadplace = json.indexOf("vs");
+            int StartofPayloadGasWaarde = Payloadplace + 7;
+            int EndOfPayloadGasWaarde = StartofPayloadGasWaarde + 4;
+            String GasWaardeHex = json.substring(StartofPayloadGasWaarde, EndOfPayloadGasWaarde);
+            System.out.println(GasWaardeHex);
+            int StartofPayloadId = EndOfPayloadGasWaarde;
+            int EndOfPayloadTId = StartofPayloadId + 2;
+            String IdHex = json.substring(StartofPayloadId, EndOfPayloadTId);
+            System.out.println(IdHex);
+
+            Integer GasWaardeDec = Integer.parseInt(GasWaardeHex, 16);
+            Integer IdDec = Integer.parseInt(IdHex, 16);
+            
+            Gmodule.setWaarde(GasWaardeDec);
+            Gmodule.setId(IdDec);
+            gaslijst.add(Gmodule);
+
+            GasModule dbgasmodule = new GasModule(IdDec,GasWaardeDec);
+            try {
+                Class.forName("org.postgresql.Driver");
+            } catch (java.lang.ClassNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+            
+            Connection con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+
+            /*
+                String url = "jdbc:postgresql://dumbo.db.elephantsql.com:5432/kdftqapz";
+                String username = "kdftqapz";
+                String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
+                Connection con = DriverManager.getConnection(url,username,password);
+             */
+//// Huidige datum van het systeem gebruiken om naar de database door sturen als Timestamp
+//Date datum = new Date();
+//DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss");
+//String formattedDatum = formatter.format(datum);
+//
+//String query = "INSERT INTO \"smartfarm\".\"gasmodule\" (module_naam, module_waarde, module_timestamp) VALUES ('" + moduleNaam + "', " + waarde + ", '" + formattedDatum + "'" + ");";
+
+            //String insertStatement = "insert into windmodules (windrichting,windsnelheid) values('" + dbwindmodule.getValueWindR()+ "','" + dbwindmodule.getValueWindS()+ "')";
+            String insertStatementGasWaarde = "insert into smartfarm.gasdata (gas_id,gas_details) values('mq" + dbgasmodule.getId()+ "','" + dbgasmodule.getWaarde()+ "')";
+//            String insertStatementGasTimeStamp = "insert into smartfarm.gasmodule (gas_id,gas_details) values('mq" + dbgasmodule.getId()+ "','" + dbgasmodule.getModuleTimeStamp()+ "')";
+            int resultG = stat.executeUpdate(insertStatementGasWaarde);
+//            int resultGTS = stat.executeUpdate(insertStatementGasTimeStamp);
+
+            int moduleGasW = gaslijst.get(gascounter).getWaarde();
+            int moduleId = gaslijst.get(gascounter).getId();
+
+            System.out.println("GasWaarde: " + moduleGasW);
+            System.out.println("GasModuleId: " + moduleId);
+            gascounter++;
+            con.close();
+            return "Data has been sent";
+            
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Couldn't find the vs atribute");
+            return "Data has not been sent";
+//        } finally {
+//            //It's important to close the statement when you are done with it
+//            try {
+//                stat.close();
+//            } catch (SQLException se) {
+//                //do something
+//                System.out.println(se.getMessage());
+//                System.out.println("Something went wrong performing the finally block");
+//
+//            }
+        }
+
+    }
+    @PostMapping(path = "/kpn/bodemmodule", produces = "application/json")
+    public String addKPNBodemModule(@RequestBody String json) {
+        //Just has a Sysout stmt, a real world application would save this record to the database
+        System.out.println("Data sent from KPN for the BodemModule");
+        System.out.println(json);
+        BodemModule Bomodule = new BodemModule();
+        try {
+
+            int Payloadplace = json.indexOf("vs");
+            int StartofPayloadSoil = Payloadplace + 7;
+            int EndOfPayloadSoil = StartofPayloadSoil + 4;
+            String SoilHex = json.substring(StartofPayloadSoil, EndOfPayloadSoil);
+            System.out.println(SoilHex);
+            int StartofPayloadId = EndOfPayloadSoil;
+            int EndOfPayloadId = StartofPayloadId + 2;
+            String IdHex = json.substring(StartofPayloadId, EndOfPayloadId);
+            System.out.println(IdHex);
+
+            Integer SoilDec = Integer.parseInt(SoilHex, 16);
+
+            Integer IdDec = Integer.parseInt(IdHex, 16);
+
+            Bomodule.setId(IdDec);
+            Bomodule.setValueSoil(SoilDec);
+            bodemlijst.add(Bomodule);
+
+            BodemModule dbBodemmodule = new BodemModule(IdDec, SoilDec);
+            try {
+                Class.forName("org.postgresql.Driver");
+            } catch (java.lang.ClassNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+            Connection con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+
+            /*
+                String url = "jdbc:postgresql://dumbo.db.elephantsql.com:5432/kdftqapz";
+                String username = "kdftqapz";
+                String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
+                Connection con = DriverManager.getConnection(url,username,password);
+             */
+            //String insertStatement = "insert into smartfarm.airdata (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
+            String insertStatementBodem = "insert into smartfarm.soildata (soil_id,soil_value) values('BoVh" + dbBodemmodule.getId()+ "','" + dbBodemmodule.getValueSoil()+ "')";
+            int resultT = stat.executeUpdate(insertStatementBodem);
+
+            double moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
+            int moduleId = bodemlijst.get(bodemcounter).getId();
+
+            System.out.println("Soilmoisture: " + moduleSoilmoisture);
+            System.out.println("BodemModuleId: " + moduleId);
+            bodemcounter++;
+            con.close();
+            return "Data has been sent";
+
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
