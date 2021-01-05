@@ -65,7 +65,7 @@ public class ServerController {
         try {
             Connection con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
-            ResultSet result = stat.executeQuery("select * from luchtmodules");
+            ResultSet result = stat.executeQuery("select * from smartfarm.airmodule");
             while (result.next()) {
                 LuchtModule dbluchtmodule = new LuchtModule(result.getInt("lumod_id"), result.getInt("temperatuur"), result.getInt("vochtigheid"));
                 luchtlist.getLuchtModuleList().add(dbluchtmodule);
