@@ -281,7 +281,7 @@ public class ServerController {
         try {
 
             int Payloadplace = json.indexOf("vs");
-            int StartofPayloadGasWaarde = Payloadplace + 7;
+            int StartofPayloadGasWaarde = Payloadplace + 5;
             int EndOfPayloadGasWaarde = StartofPayloadGasWaarde + 4;
             String GasWaardeHex = json.substring(StartofPayloadGasWaarde, EndOfPayloadGasWaarde);
             System.out.println(GasWaardeHex);
