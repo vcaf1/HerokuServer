@@ -11,7 +11,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 import org.postgresql.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -313,15 +316,16 @@ public class ServerController {
                 String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
                 Connection con = DriverManager.getConnection(url,username,password);
              */
-//// Huidige datum van het systeem gebruiken om naar de database door sturen als Timestamp
-//Date datum = new Date();
-//DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss");
-//String formattedDatum = formatter.format(datum);
-//
-//String query = "INSERT INTO \"smartfarm\".\"gasmodule\" (module_naam, module_waarde, module_timestamp) VALUES ('" + moduleNaam + "', " + waarde + ", '" + formattedDatum + "'" + ");";
+
+            // Huidige datum van het systeem gebruiken om naar de database door sturen als Timestamp
+            Date datum = new Date();
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss");
+            String formattedDatum = formatter.format(datum);
+
+            String insertStatementGasWaarde = "INSERT INTO \"smartfarm\".\"gasmodule\" (module_naam, module_waarde, module_timestamp) VALUES ('mq135', " + dbgasmodule.getWaarde() + ", '" + formattedDatum + "'" + ");";
 
             //String insertStatement = "insert into windmodules (windrichting,windsnelheid) values('" + dbwindmodule.getValueWindR()+ "','" + dbwindmodule.getValueWindS()+ "')";
-            String insertStatementGasWaarde = "insert into smartfarm.gasdata (gas_id,gas_details) values('mq" + dbgasmodule.getId()+ "','" + dbgasmodule.getWaarde()+ "')";
+            //String insertStatementGasWaarde = "insert into smartfarm.gasdata (gas_id,gas_details) values('mq" + dbgasmodule.getId()+ "','" + dbgasmodule.getWaarde()+ "')";
 //            String insertStatementGasTimeStamp = "insert into smartfarm.gasmodule (gas_id,gas_details) values('mq" + dbgasmodule.getId()+ "','" + dbgasmodule.getModuleTimeStamp()+ "')";
             int resultG = stat.executeUpdate(insertStatementGasWaarde);
 //            int resultGTS = stat.executeUpdate(insertStatementGasTimeStamp);
