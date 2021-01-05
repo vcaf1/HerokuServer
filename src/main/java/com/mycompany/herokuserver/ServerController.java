@@ -362,7 +362,7 @@ public class ServerController {
         try {
 
             int Payloadplace = json.indexOf("vs");
-            int StartofPayloadSoil = Payloadplace + 7;
+            int StartofPayloadSoil = Payloadplace + 5;
             int EndOfPayloadSoil = StartofPayloadSoil + 4;
             String SoilHex = json.substring(StartofPayloadSoil, EndOfPayloadSoil);
             System.out.println(SoilHex);
