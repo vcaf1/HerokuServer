@@ -11,7 +11,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 import org.postgresql.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +28,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping(path = "/module")
-/**
- *
- * @author Victoria
- */
+
 public class ServerController {
 
     @Autowired
@@ -37,9 +37,11 @@ public class ServerController {
     private GasModuleDAO gasModuleDao;
     private BodemDAO bodemModuleDao;
     private ArrayList<LuchtModule> luchtlijst = new ArrayList<>();
+    private ArrayList<airModule> airlijst = new ArrayList<>();
     private ArrayList<WindModule> windlijst = new ArrayList<>();
     private ArrayList<GasModule> gaslijst = new ArrayList<>();
     private ArrayList<BodemModule> bodemlijst = new ArrayList<>();
+    private airModules airlist = new airModules();
     private LuchtModules luchtlist = new LuchtModules();
     private WindModules windlist = new WindModules();
     private GasModules gaslist = new GasModules();
@@ -49,12 +51,13 @@ public class ServerController {
 
     //private DataSource dataSource;
     private int luchtcounter = 0;
+    private int aircounter = 0;
     private int windcounter = 0;
     private int gascounter = 0;
     private int bodemcounter = 0;
 
     @GetMapping(path = "/lucht", produces = "application/json")
-    public LuchtModules getLuchtModules() {
+    public airModules getAirModules() {
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -67,17 +70,96 @@ public class ServerController {
             Statement stat = con.createStatement();
             ResultSet result = stat.executeQuery("select * from smartfarm.airmodule");
             while (result.next()) {
-                LuchtModule dbluchtmodule = new LuchtModule(result.getInt("lumod_id"), result.getInt("temperatuur"), result.getInt("vochtigheid"));
-                luchtlist.getLuchtModuleList().add(dbluchtmodule);
+                airModule dbairmodule = new airModule(result.getString("air_id"),result.getString("air_details")); 
+                airlist.getAirModuleList().add(dbairmodule);
             }
-            System.out.println("Added the data from the ElephantSQL databse from the Luchtmodule");
+            System.out.println("Added the data from the ElephantSQL databse from the AirModule");
             con.close();
         } catch (SQLException se) {
             System.out.println(se.getMessage());
         }
 
-        return luchtlist;
+        return airlist;
         //return luchtModuleDao.getAllLuchtModules();
+    }
+    
+    @PostMapping(path = "/kpn/airmodule", produces = "application/json")
+    public String addKPNAirModule(@RequestBody String json) {
+        //Just has a Sysout stmt, a real world application would save this record to the database
+        System.out.println("Data sent from KPN for the AirModule");
+        System.out.println(json);
+        airModule Airmodule = new airModule();
+        try {
+            int Payloadplace = json.indexOf("vs");
+            int StartofPayloadHum = Payloadplace + 8;
+            int EndOfPayloadHum = StartofPayloadHum + 2;
+            String HumidityHex = json.substring(StartofPayloadHum, EndOfPayloadHum);
+            System.out.println(HumidityHex);
+            int StartofPayloadTem = EndOfPayloadHum + 2;
+            int EndOfPayloadTem = StartofPayloadTem + 2;
+            String TemperatuurHex = json.substring(StartofPayloadTem, EndOfPayloadTem);
+            System.out.println(TemperatuurHex);
+            int StartofPayloadId = EndOfPayloadTem;
+            int EndOfPayloadTId = StartofPayloadId + 2;
+            String IdHex = json.substring(StartofPayloadId, EndOfPayloadTId);
+            System.out.println(IdHex);
+
+            Integer HumidityDec = Integer.parseInt(HumidityHex, 16);
+            Integer TemperatuurDec = Integer.parseInt(TemperatuurHex, 16);
+            Integer IdDec = Integer.parseInt(IdHex, 16);
+            
+            String IdDecStr = "Lu"+IdDec.toString();
+            String AirDetailsDecStr = HumidityDec.toString()+ TemperatuurDec.toString();
+
+            Airmodule.setId(IdDecStr);
+            Airmodule.setAirdetails(AirDetailsDecStr);
+            airlijst.add(Airmodule);
+
+            airModule dbairmodule = new airModule(IdDecStr, AirDetailsDecStr);
+            try {
+                Class.forName("org.postgresql.Driver");
+            } catch (java.lang.ClassNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+            Connection con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+
+            /*
+                String url = "jdbc:postgresql://dumbo.db.elephantsql.com:5432/kdftqapz";
+                String username = "kdftqapz";
+                String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
+                Connection con = DriverManager.getConnection(url,username,password);
+             */
+            //String insertStatement = "insert into smartfarm.airdata (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
+            String insertStatementAirMod = "insert into smartfarm.airmodule (air_id,air_details) values('" + dbairmodule.getId()+ "','" + dbairmodule.getAirdetails()+ "')";
+            int result = stat.executeUpdate(insertStatementAirMod);
+
+            String moduleAirdetails = airlijst.get(aircounter).getAirdetails();
+            String moduleId = airlijst.get(aircounter).getId();
+
+            System.out.println("Air details: " + moduleAirdetails);
+            System.out.println("AirModuleId: " + moduleId);
+            aircounter++;
+            con.close();
+            return "Data has been sent";
+            
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Couldn't find the vs atribute");
+            return "Data has not been sent";
+//        } finally {
+//            //It's important to close the statement when you are done with it
+//            try {
+//                stat.close();
+//            } catch (SQLException se) {
+//                //do something
+//                System.out.println(se.getMessage());
+//                System.out.println("Something went wrong performing the finally block");
+//
+//            }
+        }
+
     }
 
     /*
@@ -313,15 +395,17 @@ public class ServerController {
                 String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
                 Connection con = DriverManager.getConnection(url,username,password);
              */
-//// Huidige datum van het systeem gebruiken om naar de database door sturen als Timestamp
-//Date datum = new Date();
-//DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss");
-//String formattedDatum = formatter.format(datum);
-//
-//String query = "INSERT INTO \"smartfarm\".\"gasmodule\" (module_naam, module_waarde, module_timestamp) VALUES ('" + moduleNaam + "', " + waarde + ", '" + formattedDatum + "'" + ");";
+
+
+            // Huidige datum van het systeem gebruiken om naar de database door sturen als Timestamp
+            Date datum = new Date();
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss");
+            String formattedDatum = formatter.format(datum);
+
+            String insertStatementGasWaarde = "INSERT INTO \"smartfarm\".\"gasmodule\" (module_naam, module_waarde, module_timestamp) VALUES ('mq135', " + dbgasmodule.getWaarde() + ", '" + formattedDatum + "'" + ");";
 
             //String insertStatement = "insert into windmodules (windrichting,windsnelheid) values('" + dbwindmodule.getValueWindR()+ "','" + dbwindmodule.getValueWindS()+ "')";
-            String insertStatementGasWaarde = "insert into smartfarm.gasdata (gas_id,gas_details) values('mq" + dbgasmodule.getId()+ "','" + dbgasmodule.getWaarde()+ "')";
+            //String insertStatementGasWaarde = "insert into smartfarm.gasdata (gas_id,gas_details) values('mq" + dbgasmodule.getId()+ "','" + dbgasmodule.getWaarde()+ "')";
 //            String insertStatementGasTimeStamp = "insert into smartfarm.gasmodule (gas_id,gas_details) values('mq" + dbgasmodule.getId()+ "','" + dbgasmodule.getModuleTimeStamp()+ "')";
             int resultG = stat.executeUpdate(insertStatementGasWaarde);
 //            int resultGTS = stat.executeUpdate(insertStatementGasTimeStamp);
