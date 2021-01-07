@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.herokuserver;
 import java.util.Arrays;
 
@@ -13,10 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-/**
- *
- * @author Victoria
- */
+
 //to run the localhost locally
 //http://localhost:8080/module/
 public class Starter {
