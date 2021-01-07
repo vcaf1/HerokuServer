@@ -391,7 +391,6 @@ public class ServerController {
                 Connection con = DriverManager.getConnection(url,username,password);
              */
 
-
             // Huidige datum van het systeem gebruiken om naar de database door sturen als Timestamp
             Date datum = new Date();
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss");
