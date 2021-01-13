@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import org.postgresql.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ public class ServerController {
     private ArrayList<WindModule> windlijst = new ArrayList<>();
     private ArrayList<GasModule> gaslijst = new ArrayList<>();
     private ArrayList<BodemModule> bodemlijst = new ArrayList<>();
+    private List<airModule> airModuleList;
     private airModules airlist = new airModules();
     private LuchtModules luchtlist = new LuchtModules();
     private WindModules windlist = new WindModules();
@@ -52,7 +54,7 @@ public class ServerController {
     private int bodemcounter = 0;
 
     @GetMapping(path = "/lucht", produces = "application/json")
-    public airModules getAirModules() {
+    public ArrayList<airModule> getAirModules() {
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -67,6 +69,8 @@ public class ServerController {
             while (result.next()) {
                 airModule dbairmodule = new airModule(result.getString("air_id"),result.getString("air_details")); 
                 airlist.getAirModuleList().add(dbairmodule);
+//                airModuleList.add(dbairmodule);
+                airlijst.add(dbairmodule);
             }
             System.out.println("Added the data from the ElephantSQL databse from the AirModule");
             con.close();
@@ -74,7 +78,10 @@ public class ServerController {
             System.out.println(se.getMessage());
         }
 
-        return airlist;
+        System.out.println(airlijst);
+        System.out.println(airlist);
+        System.out.println(airModuleList);
+        return airlijst;
         //return luchtModuleDao.getAllLuchtModules();
     }
     
@@ -84,6 +91,7 @@ public class ServerController {
         System.out.println("Data sent from KPN for the AirModule");
         System.out.println(json);
         airModule Airmodule = new airModule();
+        LuchtModule Lumodule = new LuchtModule();
         try {
             int Payloadplace = json.indexOf("vs");
             int StartofPayloadHum = Payloadplace + 8;
@@ -111,6 +119,8 @@ public class ServerController {
             airlijst.add(Airmodule);
 
             airModule dbairmodule = new airModule(IdDecStr, AirDetailsDecStr);
+            luchtModuleDao.addLuchtModule(Lumodule);
+            
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (java.lang.ClassNotFoundException e) {
