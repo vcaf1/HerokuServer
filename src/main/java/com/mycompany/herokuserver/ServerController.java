@@ -57,7 +57,7 @@ public class ServerController {
     private int bodemcounter = 0;
 
     @GetMapping(path = "/lucht", produces = "application/json")
-    public JSONObject getAirModules() {
+    public Collection<JSONObject> getAirModules() {
     JSONObject jo = new JSONObject();
     Collection<JSONObject> items = new ArrayList<JSONObject>();
         try {
@@ -92,7 +92,7 @@ public class ServerController {
         System.out.println(airlijst);
         System.out.println(airlist);
         System.out.println(airModuleList);
-        return jo;
+        return items;
         //return luchtModuleDao.getAllLuchtModules();
     }
     
