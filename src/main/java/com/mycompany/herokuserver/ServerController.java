@@ -9,9 +9,11 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import org.json.simple.JSONArray;
 import org.postgresql.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.json.simple.JSONObject;
 
 @RestController
 @RequestMapping(path = "/module")
@@ -54,8 +57,9 @@ public class ServerController {
     private int bodemcounter = 0;
 
     @GetMapping(path = "/lucht", produces = "application/json")
-    public ArrayList<airModule> getAirModules() {
-
+    public JSONObject getAirModules() {
+    JSONObject jo = new JSONObject();
+    Collection<JSONObject> items = new ArrayList<JSONObject>();
         try {
             Class.forName("org.postgresql.Driver");
         } catch (java.lang.ClassNotFoundException e) {
@@ -68,6 +72,12 @@ public class ServerController {
             ResultSet result = stat.executeQuery("select * from smartfarm.airmodule");
             while (result.next()) {
                 airModule dbairmodule = new airModule(result.getString("air_id"),result.getString("air_details")); 
+                JSONObject item1 = new JSONObject();
+                item1.put("id", dbairmodule.getId());
+                item1.put("air_details", dbairmodule.getAirdetails());
+                items.add(item1);
+                jo.put("aoColumnDefs",items);
+    System.out.println(jo.toString());
                 airlist.getAirModuleList().add(dbairmodule);
 //                airModuleList.add(dbairmodule);
                 airlijst.add(dbairmodule);
@@ -77,11 +87,12 @@ public class ServerController {
         } catch (SQLException se) {
             System.out.println(se.getMessage());
         }
+    System.out.println(jo.toString());
 
         System.out.println(airlijst);
         System.out.println(airlist);
         System.out.println(airModuleList);
-        return airlijst;
+        return jo;
         //return luchtModuleDao.getAllLuchtModules();
     }
     
