@@ -496,7 +496,6 @@ public class ServerController {
 
             int moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
 
-
             System.out.println("Soilmoisture: " + moduleSoilmoisture);
 //            System.out.println("BodemModuleId: " + moduleId);
             bodemcounter++;
