@@ -37,16 +37,16 @@ public class BodemModule extends Modules {
         if (!(o instanceof BodemModule))
             return false;
         BodemModule bodemModule = (BodemModule) o;
-        return Objects.equals(this.id, bodemModule.id) && Objects.equals(this.valueSoil, bodemModule.valueSoil);
+        return Objects.equals(this.valueSoil, bodemModule.valueSoil);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.valueSoil);
+        return Objects.hash( this.valueSoil);
     }
 
     @Override
     public String toString() {
-        return "BodemModule{" + "id=" + this.id + ", Soilmoisture ='" + this.valueSoil  + '}';
+        return "BodemModule{"  + " Soilmoisture ='" + this.valueSoil  + '}';
     }
 }

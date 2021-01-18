@@ -32,9 +32,6 @@ public class ServerController {
 
     @Autowired
     private LuchtModuleDAO luchtModuleDao;
-    private WindModuleDAO windModuleDao;
-    private GasModuleDAO gasModuleDao;
-    private BodemDAO bodemModuleDao;
     private ArrayList<LuchtModule> luchtlijst = new ArrayList<>();
     private ArrayList<airModule> airlijst = new ArrayList<>();
     private ArrayList<WindModule> windlijst = new ArrayList<>();
@@ -470,7 +467,7 @@ public class ServerController {
 //            String IdHex = json.substring(StartofPayloadId, EndOfPayloadId);
 //            System.out.println(IdHex);
 
-            Integer SoilDec = Integer.parseInt(SoilHex, 16);
+            int SoilDec = Integer.parseInt(SoilHex, 16);
 
 //            Integer IdDec = Integer.parseInt(IdHex, 16);
 
@@ -478,7 +475,7 @@ public class ServerController {
             Bomodule.setValueSoil(SoilDec);
             bodemlijst.add(Bomodule);
 
-            BodemModule dbBodemmodule = new BodemModule( SoilDec);
+            BodemModule dbBodemmodule = new BodemModule(SoilDec);
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (java.lang.ClassNotFoundException e) {
@@ -497,8 +494,8 @@ public class ServerController {
             String insertStatementBodem = "insert into smartfarm.soildata (soil_value) values('" +  dbBodemmodule.getValueSoil()+ "')";
             int resultT = stat.executeUpdate(insertStatementBodem);
 
-            double moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
-            int moduleId = bodemlijst.get(bodemcounter).getId();
+            int moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
+
 
             System.out.println("Soilmoisture: " + moduleSoilmoisture);
 //            System.out.println("BodemModuleId: " + moduleId);
