@@ -464,29 +464,33 @@ public class ServerController {
             System.out.println(SoilHex);
 
             int SoilDec = Integer.parseInt(SoilHex, 16);
+            if (SoilDec > 0 && SoilDec<100 ){
+                Bomodule.setValueSoil(SoilDec);
+                bodemlijst.add(Bomodule);
+
+                BodemModule dbBodemmodule = new BodemModule(SoilDec);
+                try {
+                    Class.forName("org.postgresql.Driver");
+                } catch (java.lang.ClassNotFoundException e) {
+                    System.out.println(e.getMessage());
+                }
+                Connection con = DBCPDataSource.getConnection();
+                Statement stat = con.createStatement();
+
+                String insertStatementBodem = "insert into smartfarm.soildata (soil_value) values('" +  dbBodemmodule.getValueSoil()+ "')";
+                int resultT = stat.executeUpdate(insertStatementBodem);
+
+                int moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
 
 
-            Bomodule.setValueSoil(SoilDec);
-            bodemlijst.add(Bomodule);
+                System.out.println("Soilmoisture: " + moduleSoilmoisture);
+                bodemcounter++;
+                con.close();
 
-            BodemModule dbBodemmodule = new BodemModule(SoilDec);
-            try {
-                Class.forName("org.postgresql.Driver");
-            } catch (java.lang.ClassNotFoundException e) {
-                System.out.println(e.getMessage());
+            }else {
+                System.out.println("Soilmoisture value is outside of boundaries");
             }
-            Connection con = DBCPDataSource.getConnection();
-            Statement stat = con.createStatement();
 
-            String insertStatementBodem = "insert into smartfarm.soildata (soil_value) values('" +  dbBodemmodule.getValueSoil()+ "')";
-            int resultT = stat.executeUpdate(insertStatementBodem);
-
-            int moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
-
-
-            System.out.println("Soilmoisture: " + moduleSoilmoisture);
-            bodemcounter++;
-            con.close();
             return "Data has been sent";
 
 
@@ -494,16 +498,6 @@ public class ServerController {
             System.out.println(e.getMessage());
             System.out.println("Couldn't find the vs atribute");
             return "Data has not been sent";
-//        } finally {
-//            //It's important to close the statement when you are done with it
-//            try {
-//                stat.close();
-//            } catch (SQLException se) {
-//                //do something
-//                System.out.println(se.getMessage());
-//                System.out.println("Something went wrong performing the finally block");
-//
-//            }
         }
 
     }
