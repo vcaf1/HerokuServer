@@ -32,9 +32,6 @@ public class ServerController {
 
     @Autowired
     private LuchtModuleDAO luchtModuleDao;
-    private WindModuleDAO windModuleDao;
-    private GasModuleDAO gasModuleDao;
-    private BodemDAO bodemModuleDao;
     private ArrayList<LuchtModule> luchtlijst = new ArrayList<>();
     private ArrayList<airModule> airlijst = new ArrayList<>();
     private ArrayList<WindModule> windlijst = new ArrayList<>();
@@ -472,7 +469,7 @@ public class ServerController {
             Bomodule.setValueSoil(SoilDec);
             bodemlijst.add(Bomodule);
 
-            //BodemModule dbBodemmodule = new BodemModule(SoilDec);
+            BodemModule dbBodemmodule = new BodemModule(SoilDec);
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (java.lang.ClassNotFoundException e) {
