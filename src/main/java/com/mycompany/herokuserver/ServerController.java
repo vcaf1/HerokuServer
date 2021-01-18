@@ -468,38 +468,34 @@ public class ServerController {
 //            System.out.println(IdHex);
 
             int SoilDec = Integer.parseInt(SoilHex, 16);
+            if (SoilDec > 0 && SoilDec<100 ){
+                Bomodule.setValueSoil(SoilDec);
+                bodemlijst.add(Bomodule);
+
+                BodemModule dbBodemmodule = new BodemModule(SoilDec);
+                try {
+                    Class.forName("org.postgresql.Driver");
+                } catch (java.lang.ClassNotFoundException e) {
+                    System.out.println(e.getMessage());
+                }
+                Connection con = DBCPDataSource.getConnection();
+                Statement stat = con.createStatement();
+
+                String insertStatementBodem = "insert into smartfarm.soildata (soil_value) values('" +  dbBodemmodule.getValueSoil()+ "')";
+                int resultT = stat.executeUpdate(insertStatementBodem);
+
+                int moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
 
 //            Integer IdDec = Integer.parseInt(IdHex, 16);
 
-//            Bomodule.setId(IdDec);
-            Bomodule.setValueSoil(SoilDec);
-            bodemlijst.add(Bomodule);
+                System.out.println("Soilmoisture: " + moduleSoilmoisture);
+                bodemcounter++;
+                con.close();
 
-            BodemModule dbBodemmodule = new BodemModule(SoilDec);
-            try {
-                Class.forName("org.postgresql.Driver");
-            } catch (java.lang.ClassNotFoundException e) {
-                System.out.println(e.getMessage());
+            }else {
+                System.out.println("Soilmoisture value is outside of boundaries");
             }
-            Connection con = DBCPDataSource.getConnection();
-            Statement stat = con.createStatement();
 
-            /*
-                String url = "jdbc:postgresql://dumbo.db.elephantsql.com:5432/kdftqapz";
-                String username = "kdftqapz";
-                String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
-                Connection con = DriverManager.getConnection(url,username,password);
-             */
-            //String insertStatement = "insert into smartfarm.airdata (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
-            String insertStatementBodem = "insert into smartfarm.soildata (soil_value) values('" +  dbBodemmodule.getValueSoil()+ "')";
-            int resultT = stat.executeUpdate(insertStatementBodem);
-
-            int moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
-
-            System.out.println("Soilmoisture: " + moduleSoilmoisture);
-//            System.out.println("BodemModuleId: " + moduleId);
-            bodemcounter++;
-            con.close();
             return "Data has been sent";
 
 
@@ -507,16 +503,6 @@ public class ServerController {
             System.out.println(e.getMessage());
             System.out.println("Couldn't find the vs atribute");
             return "Data has not been sent";
-//        } finally {
-//            //It's important to close the statement when you are done with it
-//            try {
-//                stat.close();
-//            } catch (SQLException se) {
-//                //do something
-//                System.out.println(se.getMessage());
-//                System.out.println("Something went wrong performing the finally block");
-//
-//            }
         }
 
     }
