@@ -478,7 +478,7 @@ public class ServerController {
             Connection con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
 
-            String insertStatementBodem = "insert into smartfarm.soildata (soil_value) values( dbBodemmodule.getValueSoil() )";
+            String insertStatementBodem = "insert into smartfarm.soildata (soil_value) values('" +  dbBodemmodule.getValueSoil()+ "')";
             int resultT = stat.executeUpdate(insertStatementBodem);
 
             int moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
