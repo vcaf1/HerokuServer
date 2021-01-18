@@ -3,15 +3,15 @@ import java.util.Objects;
 
 public class BodemModule extends Modules {
 
-    private  double valueSoil;
+    private  int valueSoil;
 
     BodemModule() {}
 
-    BodemModule(double valueSoil) {
+    BodemModule(int valueSoil) {
         this.valueSoil = valueSoil;
 
     }
-    public BodemModule(int id, double valueSoil) {
+    public BodemModule(int id, int valueSoil) {
         super();
         this.id = id;
         this.valueSoil = valueSoil;
@@ -24,8 +24,8 @@ public class BodemModule extends Modules {
     public void setId(int id) {
         this.id = id;
     }
-    public double getValueSoil(){return valueSoil;}
-    public void setValueSoil(double valueSoil){this.valueSoil = valueSoil;}
+    public int getValueSoil(){return valueSoil;}
+    public void setValueSoil(int valueSoil){this.valueSoil = valueSoil;}
 
 
 
