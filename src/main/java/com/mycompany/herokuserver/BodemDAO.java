@@ -22,7 +22,7 @@ public class BodemDAO {
             Statement stat = con.createStatement();
             ResultSet result = stat.executeQuery("select * from bodemmodules");
             while (result.next()) {
-                BodemModule dbBodemmodule = new BodemModule(result.getInt("soil_id"),result.getInt("soilValue"));
+                BodemModule dbBodemmodule = new BodemModule(result.getInt("soilValue"));
                 list.getBodemModuleList().add(dbBodemmodule);
             }
             System.out.println("Added the data from the ElephantSQL database from the Luchtmodule");

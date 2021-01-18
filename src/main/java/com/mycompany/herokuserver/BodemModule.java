@@ -11,12 +11,6 @@ public class BodemModule extends Modules {
         this.valueSoil = valueSoil;
 
     }
-    public BodemModule(int id, int valueSoil) {
-        super();
-        this.id = id;
-        this.valueSoil = valueSoil;
-
-    }
 
     public int getId() {
         return this.id;
