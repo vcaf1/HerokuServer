@@ -465,20 +465,14 @@ public class ServerController {
             int EndOfPayloadSoil = StartofPayloadSoil + 4;
             String SoilHex = json.substring(StartofPayloadSoil, EndOfPayloadSoil);
             System.out.println(SoilHex);
-            int StartofPayloadId = EndOfPayloadSoil;
-            int EndOfPayloadId = StartofPayloadId + 2;
-            String IdHex = json.substring(StartofPayloadId, EndOfPayloadId);
-            System.out.println(IdHex);
 
-            Integer SoilDec = Integer.parseInt(SoilHex, 16);
+            int SoilDec = Integer.parseInt(SoilHex, 16);
 
-            Integer IdDec = Integer.parseInt(IdHex, 16);
 
-            Bomodule.setId(IdDec);
             Bomodule.setValueSoil(SoilDec);
             bodemlijst.add(Bomodule);
 
-            BodemModule dbBodemmodule = new BodemModule(IdDec, SoilDec);
+            BodemModule dbBodemmodule = new BodemModule(SoilDec);
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (java.lang.ClassNotFoundException e) {
@@ -487,21 +481,13 @@ public class ServerController {
             Connection con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
 
-            /*
-                String url = "jdbc:postgresql://dumbo.db.elephantsql.com:5432/kdftqapz";
-                String username = "kdftqapz";
-                String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
-                Connection con = DriverManager.getConnection(url,username,password);
-             */
-            //String insertStatement = "insert into smartfarm.airdata (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
-            String insertStatementBodem = "insert into smartfarm.soildata (soil_id,soil_value) values('BoVh" + dbBodemmodule.getId()+ "','" + dbBodemmodule.getValueSoil()+ "')";
+            String insertStatementBodem = "insert into smartfarm.soildata (soil_value) values( dbBodemmodule.getValueSoil() )";
             int resultT = stat.executeUpdate(insertStatementBodem);
 
-            double moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
-            int moduleId = bodemlijst.get(bodemcounter).getId();
+            int moduleSoilmoisture = bodemlijst.get(bodemcounter).getValueSoil();
+
 
             System.out.println("Soilmoisture: " + moduleSoilmoisture);
-            System.out.println("BodemModuleId: " + moduleId);
             bodemcounter++;
             con.close();
             return "Data has been sent";

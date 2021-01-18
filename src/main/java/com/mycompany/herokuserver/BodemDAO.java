@@ -1,5 +1,5 @@
 package com.mycompany.herokuserver;
-import org.springframework.stereotype.Repository;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +22,7 @@ public class BodemDAO {
             Statement stat = con.createStatement();
             ResultSet result = stat.executeQuery("select * from bodemmodules");
             while (result.next()) {
-                BodemModule dbBodemmodule = new BodemModule(result.getInt("soil_id"),result.getDouble("soilValue"));
+                BodemModule dbBodemmodule = new BodemModule(result.getInt("soil_id"),result.getInt("soilValue"));
                 list.getBodemModuleList().add(dbBodemmodule);
             }
             System.out.println("Added the data from the ElephantSQL database from the Luchtmodule");
