@@ -5,6 +5,7 @@ import java.util.Objects;
 public class WindModule extends Modules{
     
   private  int valueWindR,valueWindS;
+  private String dbValueWindRS, dbID;
   
     WindModule(){
         
@@ -20,6 +21,28 @@ public class WindModule extends Modules{
         this.id = id;
         this.valueWindR = valueWindR;
         this.valueWindS = valueWindS;
+    }
+  
+    public WindModule(String dbID, String dbValueWindRS) {
+        super();
+        this.dbID = dbID;
+        this.dbValueWindRS = dbValueWindRS;
+    }
+
+    public String getDbID() {
+        return dbID;
+    }
+
+    public void setDbID(String dbID) {
+        this.dbID = dbID;
+    }
+
+    public String getDbValueWindRS() {
+        return dbValueWindRS;
+    }
+
+    public void setDbValueWindRS(String dbValueWindRS) {
+        this.dbValueWindRS = dbValueWindRS;
     }
 
     public int getValueWindR() {
