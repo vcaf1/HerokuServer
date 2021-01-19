@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 class LuchtModule extends Modules{
 
   private  int valueTem,valueHum;
+    private String moduleNaam;
 
   LuchtModule() {}
 
@@ -21,6 +22,21 @@ class LuchtModule extends Modules{
         this.id = id;
         this.valueTem = valueTem;
         this.valueHum = valueHum;
+    }
+    public LuchtModule(int id, String moduleNaam, int valueTem, int valueHum) {
+        super();
+        this.id = id;
+        this.moduleNaam = moduleNaam;
+        this.valueTem = valueTem;
+        this.valueHum = valueHum;
+    }
+
+    public String getModuleNaam() {
+        return moduleNaam;
+    }
+
+    public void setModuleNaam(String moduleNaam) {
+        this.moduleNaam = moduleNaam;
     }
 
   public int getId() {

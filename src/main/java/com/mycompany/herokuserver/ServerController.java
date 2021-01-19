@@ -68,12 +68,14 @@ public class ServerController {
             Statement stat = con.createStatement();
             ResultSet result = stat.executeQuery("select * from smartfarm.airmodule");
             while (result.next()) {
-//                LuchtModule dbairmodule = new LuchtModule(result.getString("air_id"), result.getString("air_temp"));
-//                JSONObject item1 = new JSONObject();
-//                item1.put("id", dbairmodule.getId());
-//                item1.put("air_details", dbairmodule.getAirdetails());
-//                items.add(item1);
-//                jo.put("aoColumnDefs", items);
+                LuchtModule dbairmodule = new LuchtModule(result.getInt("id"), result.getString("air_id"), result.getInt("air_temp"),result.getInt("air_humid"));
+                JSONObject item1 = new JSONObject();
+                item1.put("id", dbairmodule.getId());
+                item1.put("air_id", dbairmodule.getModuleNaam());
+                item1.put("air_temp", dbairmodule.getValueTem());
+                item1.put("air_humid", dbairmodule.getValueHum());
+                items.add(item1);
+                jo.put("aoColumnDefs", items);
                 System.out.println(jo.toString());
 //                airlist.getAirModuleList().add(dbairmodule);
 //                airModuleList.add(dbairmodule);
@@ -225,47 +227,11 @@ public class ServerController {
             System.out.println(e.getMessage());
             System.out.println("Couldn't find the vs atribute");
             return "Data has not been sent";
-//        } finally {
-//            //It's important to close the statement when you are done with it
-//            try {
-//                stat.close();
-//            } catch (SQLException se) {
-//                //do something
-//                System.out.println(se.getMessage());
-//                System.out.println("Something went wrong performing the finally block");
-//
-//            }
         }
 
     }
 
-    /*
-    @GetMapping(path = "/wind", produces = "application/json")
-    public WindModules getWindModules() {
-
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (java.lang.ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-
-        try {
-            Connection con = DBCPDataSource.getConnection();
-            Statement stat = con.createStatement();
-            ResultSet result = stat.executeQuery("select * from luchtmodules");
-            while (result.next()) {
-                WindModule dbwindmodule = new WindModule(result.getInt("lumod_id"), result.getInt("temperatuur"), result.getInt("vochtigheid"));
-                windlist.getWindModuleList().add(dbwindmodule);
-            }
-            System.out.println("Added the data from the ElephantSQL databse from the Windmodule");
-        } catch (SQLException se) {
-            System.out.println(se.getMessage());
-        }
-
-        return windlist;
-        //return windModuleDao.getAllWindModules();
-    }
-     */
+    
     @PostMapping(path = "/kpn/luchtmodule", produces = "application/json")
     public String addKPNLuchtModule(@RequestBody String json) {
         //Just has a Sysout stmt, a real world application would save this record to the database
@@ -311,12 +277,12 @@ public class ServerController {
                 String username = "kdftqapz";
                 String password = "mjF8vF1uOBKwJjPfb3h_eyzGnpQLFkg4";
                 Connection con = DriverManager.getConnection(url,username,password);
-             */
-            //String insertStatement = "insert into smartfarm.airdata (temperatuur,vochtigheid) values('" + dbluchtmodule.getValueTem() + "','" + dbluchtmodule.getValueHum() + "')";
-            String insertStatementTemperatuur = "insert into smartfarm.airmodule (air_id,air_details) values('Lu" + dbluchtmodule.getId() + "T','" + dbluchtmodule.getValueTem() + "')";
-            String insertStatementVochtigheid = "insert into smartfarm.airmodule (air_id,air_details) values('Lu" + dbluchtmodule.getId() + "V','" + dbluchtmodule.getValueHum() + "')";
-            int resultT = stat.executeUpdate(insertStatementTemperatuur);
-            int resultV = stat.executeUpdate(insertStatementVochtigheid);
+             */               
+
+            String insertStatementLuchtModule = "insert into smartfarm.airmodule (air_id,air_temp,air_humid ) values('Lu" + dbluchtmodule.getId() + "','" + dbluchtmodule.getValueTem()+ "','" + dbluchtmodule.getValueHum() + "')";
+//            String insertStatementTemperatuur = "insert into smartfarm.airmodule (air_id,air_details) values('Lu" + dbluchtmodule.getId() + "T','" + dbluchtmodule.getValueTem() + "')";
+//            String insertStatementVochtigheid = "insert into smartfarm.airmodule (air_id,air_details) values('Lu" + dbluchtmodule.getId() + "V','" + dbluchtmodule.getValueHum() + "')";
+            int result = stat.executeUpdate(insertStatementLuchtModule);
 
             int moduleHumidity = luchtlijst.get(luchtcounter).getValueHum();
             int moduleTemperatuur = luchtlijst.get(luchtcounter).getValueTem();
