@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class GasModule extends Modules{
     private  int waarde;
+    private String moduleNaam;
 
   GasModule() {}
 
@@ -14,6 +15,20 @@ public class GasModule extends Modules{
         super();
         this.id = id;
         this.waarde = waarde;
+    }
+    public GasModule(int id, String moduleNaam,int waarde) {
+        super();
+        this.id = id;
+        this.moduleNaam = moduleNaam;
+        this.waarde = waarde;
+    }
+
+    public String getModuleNaam() {
+        return moduleNaam;
+    }
+
+    public void setModuleNaam(String moduleNaam) {
+        this.moduleNaam = moduleNaam;
     }
 
   public int getId() {
