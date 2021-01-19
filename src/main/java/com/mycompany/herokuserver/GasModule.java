@@ -3,28 +3,51 @@ package com.mycompany.herokuserver;
 import java.util.Objects;
 
 public class GasModule extends Modules{
-    private  int waarde;
-    private String moduleNaam;
+    private  int ppmWaarde;
+    private String moduleNaam,  moduleDatum;
 
   GasModule() {}
 
-  GasModule(int waarde) {
-        this.waarde = waarde;
+  GasModule(int ppmWaarde) {
+        this.ppmWaarde = ppmWaarde;
   }
-    public GasModule(int id, int waarde) {
+    public GasModule(int id, int ppmWaarde) {
         super();
         this.id = id;
-        this.waarde = waarde;
+        this.ppmWaarde = ppmWaarde;
     }
-    public GasModule(int id, String moduleNaam,int waarde) {
+    public GasModule(int id, String moduleNaam,int ppmWaarde) {
         super();
         this.id = id;
         this.moduleNaam = moduleNaam;
-        this.waarde = waarde;
+        this.ppmWaarde = ppmWaarde;
+    }
+    public GasModule(int id, String moduleNaam,int ppmWaarde, String moduleDatum) {
+        super();
+        this.id = id;
+        this.moduleNaam = moduleNaam;
+        this.ppmWaarde = ppmWaarde;
+        this.moduleDatum = moduleDatum;
     }
 
     public String getModuleNaam() {
         return moduleNaam;
+    }
+
+    public int getPpmWaarde() {
+        return ppmWaarde;
+    }
+
+    public void setPpmWaarde(int ppmWaarde) {
+        this.ppmWaarde = ppmWaarde;
+    }
+
+    public String getModuleDatum() {
+        return moduleDatum;
+    }
+
+    public void setModuleDatum(String moduleDatum) {
+        this.moduleDatum = moduleDatum;
     }
 
     public void setModuleNaam(String moduleNaam) {
@@ -39,13 +62,6 @@ public class GasModule extends Modules{
     this.id = id;
   }
 
-    public int getWaarde() {
-        return waarde;
-    }
-
-    public void setWaarde(int waarde) {
-        this.waarde = waarde;
-    }
 
     @Override
   public boolean equals(Object o) {
@@ -55,16 +71,16 @@ public class GasModule extends Modules{
     if (!(o instanceof GasModule))
       return false;
     GasModule gasmodule = (GasModule) o;
-    return Objects.equals(this.id, gasmodule.id) && Objects.equals(this.waarde, gasmodule.waarde);
+    return Objects.equals(this.id, gasmodule.id) && Objects.equals(this.ppmWaarde, gasmodule.ppmWaarde);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.waarde);
+    return Objects.hash(this.id, this.ppmWaarde);
   }
 
   @Override
   public String toString() {
-    return "WindModule{" + "id=" + this.id + ", GasWaarde='" + this.waarde + '\'' + '}';
+    return "WindModule{" + "id=" + this.id + ", GasWaarde='" + this.ppmWaarde + '\'' + '}';
   }
 }

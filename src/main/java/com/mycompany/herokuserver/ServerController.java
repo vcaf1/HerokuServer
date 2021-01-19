@@ -68,27 +68,26 @@ public class ServerController {
             Statement stat = con.createStatement();
             ResultSet result = stat.executeQuery("select * from smartfarm.airmodule");
             while (result.next()) {
-                airModule dbairmodule = new airModule(result.getString("air_id"), result.getString("air_details"));
-                JSONObject item1 = new JSONObject();
-                item1.put("id", dbairmodule.getId());
-                item1.put("air_details", dbairmodule.getAirdetails());
-                items.add(item1);
-                jo.put("aoColumnDefs", items);
+//                LuchtModule dbairmodule = new LuchtModule(result.getString("air_id"), result.getString("air_temp"));
+//                JSONObject item1 = new JSONObject();
+//                item1.put("id", dbairmodule.getId());
+//                item1.put("air_details", dbairmodule.getAirdetails());
+//                items.add(item1);
+//                jo.put("aoColumnDefs", items);
                 System.out.println(jo.toString());
-                airlist.getAirModuleList().add(dbairmodule);
+//                airlist.getAirModuleList().add(dbairmodule);
 //                airModuleList.add(dbairmodule);
-                airlijst.add(dbairmodule);
+//                airlijst.add(dbairmodule);
             }
             System.out.println("Added the data from the ElephantSQL databse from the AirModule");
             con.close();
         } catch (SQLException se) {
             System.out.println(se.getMessage());
         }
-        System.out.println(jo.toString());
-
-        System.out.println(airlijst);
-        System.out.println(airlist);
-        System.out.println(airModuleList);
+//        System.out.println(jo.toString());
+//        System.out.println(airlijst);
+//        System.out.println(airlist);
+//        System.out.println(airModuleList);
         return items;
         //return luchtModuleDao.getAllLuchtModules();
     }
@@ -140,11 +139,13 @@ public class ServerController {
             Statement stat = con.createStatement();
             ResultSet result = stat.executeQuery("select * from smartfarm.gasmodule");
             while (result.next()) {
-                GasModule dbgasmodule = new GasModule(result.getInt("id"),result.getString("module_naam"), result.getInt("module_waarde"));
+                
+                GasModule dbgasmodule = new GasModule(result.getInt("id"),result.getString("module_naam"), result.getInt("module_waarde"), result.getString("module_timestamp"));
                 JSONObject item1 = new JSONObject();
                 item1.put("id", dbgasmodule.getId());
                 item1.put("module_naam", dbgasmodule.getModuleNaam());
-                item1.put("module_waarde", dbgasmodule.getWaarde());
+                item1.put("module_waarde", dbgasmodule.getPpmWaarde());
+                item1.put("module_timestamp", dbgasmodule.getModuleDatum());
                 items.add(item1);
                 jo.put("aoColumnDefs", items);
             }
@@ -448,7 +449,7 @@ public class ServerController {
             Integer GasWaardeDec = Integer.parseInt(GasWaardeHex, 16);
             Integer IdDec = Integer.parseInt(IdHex, 16);
 
-            Gmodule.setWaarde(GasWaardeDec);
+            Gmodule.setPpmWaarde(GasWaardeDec);
             Gmodule.setId(IdDec);
             gaslijst.add(Gmodule);
 
@@ -467,7 +468,7 @@ public class ServerController {
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss");
             String formattedDatum = formatter.format(datum);
 
-            String insertStatementGasWaarde = "INSERT INTO \"smartfarm\".\"gasmodule\" (module_naam, module_waarde, module_timestamp) VALUES ('mq135', " + dbgasmodule.getWaarde() + ", '" + formattedDatum + "'" + ");";
+            String insertStatementGasWaarde = "INSERT INTO \"smartfarm\".\"gasmodule\" (module_naam, module_waarde, module_timestamp) VALUES ('mq135', " + dbgasmodule.getPpmWaarde()+ ", '" + formattedDatum + "'" + ");";
 
             //String insertStatement = "insert into windmodules (windrichting,windsnelheid) values('" + dbwindmodule.getValueWindR()+ "','" + dbwindmodule.getValueWindS()+ "')";
             //String insertStatementGasWaarde = "insert into smartfarm.gasdata (gas_id,gas_details) values('mq" + dbgasmodule.getId()+ "','" + dbgasmodule.getWaarde()+ "')";
@@ -475,7 +476,7 @@ public class ServerController {
             int resultG = stat.executeUpdate(insertStatementGasWaarde);
 //            int resultGTS = stat.executeUpdate(insertStatementGasTimeStamp);
 
-            int moduleGasW = gaslijst.get(gascounter).getWaarde();
+            int moduleGasW = gaslijst.get(gascounter).getPpmWaarde();
             int moduleId = gaslijst.get(gascounter).getId();
 
             System.out.println("GasWaarde: " + moduleGasW);
