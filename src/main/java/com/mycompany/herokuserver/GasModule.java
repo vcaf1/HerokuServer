@@ -61,26 +61,4 @@ public class GasModule extends Modules{
   public void setId(int id) {
     this.id = id;
   }
-
-
-    @Override
-  public boolean equals(Object o) {
-
-    if (this == o)
-      return true;
-    if (!(o instanceof GasModule))
-      return false;
-    GasModule gasmodule = (GasModule) o;
-    return Objects.equals(this.id, gasmodule.id) && Objects.equals(this.ppmWaarde, gasmodule.ppmWaarde);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.id, this.ppmWaarde);
-  }
-
-  @Override
-  public String toString() {
-    return "WindModule{" + "id=" + this.id + ", GasWaarde='" + this.ppmWaarde + '\'' + '}';
-  }
 }

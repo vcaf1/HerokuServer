@@ -63,26 +63,4 @@ class LuchtModule extends Modules{
     public void setValueHum(int valueHum) {
         this.valueHum = valueHum;
     }
-
-  @Override
-  public boolean equals(Object o) {
-
-    if (this == o)
-      return true;
-    if (!(o instanceof LuchtModule))
-      return false;
-    LuchtModule luchtmodule = (LuchtModule) o;
-    return Objects.equals(this.id, luchtmodule.id) && Objects.equals(this.valueHum, luchtmodule.valueHum)
-        && Objects.equals(this.valueTem, luchtmodule.valueTem);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.id, this.valueHum, this.valueTem);
-  }
-
-  @Override
-  public String toString() {
-    return "LuchtModule{" + "id=" + this.id + ", Humidity='" + this.valueHum + '\'' + ", Temperature='" + this.valueTem + '\'' + '}';
-  }
 }

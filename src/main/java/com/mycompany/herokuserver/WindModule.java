@@ -68,27 +68,4 @@ public class WindModule extends Modules{
     public void setId(int id) {
         this.id = id;
     }
-    
-
-  @Override
-  public boolean equals(Object o) {
-
-    if (this == o)
-      return true;
-    if (!(o instanceof WindModule))
-      return false;
-    WindModule windmodule = (WindModule) o;
-    return Objects.equals(this.id, windmodule.id) && Objects.equals(this.valueWindR, windmodule.valueWindS)
-        && Objects.equals(this.valueWindR, windmodule.valueWindS);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.id, this.valueWindR, this.valueWindS);
-  }
-
-  @Override
-  public String toString() {
-    return "WindModule{" + "id=" + this.id + ", WindRichting='" + this.valueWindR + '\'' + ", WindSnelheid='" + this.valueWindS + '\'' + '}';
-  }
 }
