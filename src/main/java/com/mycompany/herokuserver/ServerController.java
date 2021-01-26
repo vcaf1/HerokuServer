@@ -30,13 +30,10 @@ import org.json.simple.JSONObject;
 
 public class ServerController {
 
-//    private ArrayList<airModule> airlijst = new ArrayList<>();
     private ArrayList<WindModule> windlijst = new ArrayList<>();
     private ArrayList<LuchtModule> luchtlijst = new ArrayList<>();
     private ArrayList<GasModule> gaslijst = new ArrayList<>();
     private ArrayList<BodemModule> bodemlijst = new ArrayList<>();
-//    private List<airModule> airModuleList;
-//    private airModules airlist = new airModules();
     private LuchtModules luchtlist = new LuchtModules();
     private WindModules windlist = new WindModules();
     private GasModules gaslist = new GasModules();
@@ -44,9 +41,7 @@ public class ServerController {
     private Statement stat;
     private DBCPDataSource db;
 
-    //private DataSource dataSource;
     private int luchtcounter = 0;
-//    private int aircounter = 0;
     private int windcounter = 0;
     private int gascounter = 0;
     private int bodemcounter = 0;
@@ -146,71 +141,6 @@ public class ServerController {
     }
 
     
-//    @PostMapping(path = "/kpn/airmodule", produces = "application/json")
-//    public String addKPNAirModule(@RequestBody String json) {
-//        //Just has a Sysout stmt, a real world application would save this record to the database
-//        System.out.println("Data sent from KPN for the AirModule");
-//        System.out.println(json);
-//        airModule Airmodule = new airModule();
-//        LuchtModule Lumodule = new LuchtModule();
-//        try {
-//            int Payloadplace = json.indexOf("vs");
-//            int StartofPayloadHum = Payloadplace + 8;
-//            int EndOfPayloadHum = StartofPayloadHum + 2;
-//            String HumidityHex = json.substring(StartofPayloadHum, EndOfPayloadHum);
-//            System.out.println(HumidityHex);
-//            int StartofPayloadTem = EndOfPayloadHum + 2;
-//            int EndOfPayloadTem = StartofPayloadTem + 2;
-//            String TemperatuurHex = json.substring(StartofPayloadTem, EndOfPayloadTem);
-//            System.out.println(TemperatuurHex);
-//            int StartofPayloadId = EndOfPayloadTem;
-//            int EndOfPayloadTId = StartofPayloadId + 2;
-//            String IdHex = json.substring(StartofPayloadId, EndOfPayloadTId);
-//            System.out.println(IdHex);
-//
-//            Integer HumidityDec = Integer.parseInt(HumidityHex, 16);
-//            Integer TemperatuurDec = Integer.parseInt(TemperatuurHex, 16);
-//            Integer IdDec = Integer.parseInt(IdHex, 16);
-//
-//            String IdDecStr = "Lu" + IdDec.toString();
-//            String AirDetailsDecStr = HumidityDec.toString() + TemperatuurDec.toString();
-//
-//            Airmodule.setId(IdDecStr);
-//            Airmodule.setAirdetails(AirDetailsDecStr);
-//            airlijst.add(Airmodule);
-//
-//            airModule dbairmodule = new airModule(IdDecStr, AirDetailsDecStr);
-//            luchtModuleDao.addLuchtModule(Lumodule);
-//
-//            try {
-//                Class.forName("org.postgresql.Driver");
-//            } catch (java.lang.ClassNotFoundException e) {
-//                System.out.println(e.getMessage());
-//            }
-//            Connection con = DBCPDataSource.getConnection();
-//            Statement stat = con.createStatement();
-//
-//            String insertStatementAirMod = "insert into smartfarm.airmodule (air_id,air_details) values('" + dbairmodule.getId() + "','" + dbairmodule.getAirdetails() + "')";
-//            int result = stat.executeUpdate(insertStatementAirMod);
-//
-//            String moduleAirdetails = airlijst.get(aircounter).getAirdetails();
-//            String moduleId = airlijst.get(aircounter).getId();
-//
-//            System.out.println("Air details: " + moduleAirdetails);
-//            System.out.println("AirModuleId: " + moduleId);
-//            aircounter++;
-//            con.close();
-//            return "Data has been sent";
-//
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//            System.out.println("Couldn't find the vs atribute");
-//            return "Data has not been sent";
-//        }
-//
-//    }
-
-    
     @PostMapping(path = "/kpn/luchtmodule", produces = "application/json")
     public String addKPNLuchtModule(@RequestBody String json) {
         //Just has a Sysout stmt, a real world application would save this record to the database
@@ -223,15 +153,12 @@ public class ServerController {
             int StartofPayloadHum = Payloadplace + 7;
             int EndOfPayloadHum = StartofPayloadHum + 2;
             String HumidityHex = json.substring(StartofPayloadHum, EndOfPayloadHum);
-            System.out.println(HumidityHex);
             int StartofPayloadTem = EndOfPayloadHum + 2;
             int EndOfPayloadTem = StartofPayloadTem + 2;
             String TemperatuurHex = json.substring(StartofPayloadTem, EndOfPayloadTem);
-            System.out.println(TemperatuurHex);
             int StartofPayloadId = EndOfPayloadTem;
             int EndOfPayloadTId = StartofPayloadId + 2;
             String IdHex = json.substring(StartofPayloadId, EndOfPayloadTId);
-            System.out.println(IdHex);
 
             Integer HumidityDec = Integer.parseInt(HumidityHex, 16);
             Integer TemperatuurDec = Integer.parseInt(TemperatuurHex, 16);
@@ -285,15 +212,12 @@ public class ServerController {
             int StartofPayloadWindR = Payloadplace + 7;
             int EndOfPayloadWindR = StartofPayloadWindR + 2;
             String WindRHex = json.substring(StartofPayloadWindR, EndOfPayloadWindR);
-            System.out.println(WindRHex);
             int StartofPayloadWindS = EndOfPayloadWindR + 2;
             int EndOfPayloadWindS = StartofPayloadWindS + 2;
             String WindSHex = json.substring(StartofPayloadWindS, EndOfPayloadWindS);
-            System.out.println(WindSHex);
             int StartofPayloadId = EndOfPayloadWindS;
             int EndOfPayloadTId = StartofPayloadId + 2;
             String IdHex = json.substring(StartofPayloadId, EndOfPayloadTId);
-            System.out.println(IdHex);
 
             Integer WindRDec = Integer.parseInt(WindRHex, 16);
             Integer WindSDec = Integer.parseInt(WindSHex, 16);
@@ -349,11 +273,9 @@ public class ServerController {
             int StartofPayloadGasWaarde = Payloadplace + 5;
             int EndOfPayloadGasWaarde = StartofPayloadGasWaarde + 4;
             String GasWaardeHex = json.substring(StartofPayloadGasWaarde, EndOfPayloadGasWaarde);
-            System.out.println(GasWaardeHex);
             int StartofPayloadId = EndOfPayloadGasWaarde;
             int EndOfPayloadTId = StartofPayloadId + 2;
             String IdHex = json.substring(StartofPayloadId, EndOfPayloadTId);
-            System.out.println(IdHex);
 
             Integer GasWaardeDec = Integer.parseInt(GasWaardeHex, 16);
             Integer IdDec = Integer.parseInt(IdHex, 16);
@@ -409,7 +331,6 @@ public class ServerController {
             int StartofPayloadSoil = Payloadplace + 5;
             int EndOfPayloadSoil = StartofPayloadSoil + 4;
             String SoilHex = json.substring(StartofPayloadSoil, EndOfPayloadSoil);
-            System.out.println(SoilHex);
 
             int SoilDec = Integer.parseInt(SoilHex, 16);
             if (SoilDec > 0 && SoilDec < 100) {
