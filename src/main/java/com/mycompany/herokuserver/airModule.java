@@ -1,6 +1,6 @@
 package com.mycompany.herokuserver;
 
-public class airModule extends Module {
+public class airModule extends Modules {
 
     private String airdetails;
 
@@ -8,8 +8,9 @@ public class airModule extends Module {
         
     }
 
-    public airModule( String id, String airdetails) {
-        super(id);
+    public airModule( int id, String airdetails) {
+        super();
+        this.id = id;
         this.airdetails = airdetails;
     }
 
@@ -17,14 +18,6 @@ public class airModule extends Module {
 //        this.airmoduleID = airmoduleID;
 //        this.airdetails = airdetails;
 //    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getAirdetails() {
         return airdetails;
